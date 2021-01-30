@@ -30,7 +30,7 @@ public class Topic02_Xpath_CSS_Part_IV {
 		driver.manage().window().maximize();
 	}
 
-	//@Test
+	@Test
 	public void tc01_loginEmptyWithEmailAndPassWord() throws InterruptedException {
 		driver.get("http://live.demoguru99.com/index.php");
 		driver.findElement(By.xpath("//div[@class=\"footer\"]//a[text()='My Account']")).click();
@@ -41,7 +41,7 @@ public class Topic02_Xpath_CSS_Part_IV {
 		Assert.assertEquals(driver.findElement(By.xpath("//input[@id=\"pass\"]/following-sibling::div")).getText(), "This is a required field.");
 
 	}
-	//@Test
+	@Test
 	public void tc02_invalidEmail() throws InterruptedException {
 		driver.get("http://live.demoguru99.com/");
 		driver.findElement(By.xpath("//div[@class=\"footer\"]//a[text()='My Account']")).click();
@@ -52,7 +52,7 @@ public class Topic02_Xpath_CSS_Part_IV {
 		
 	}
 	
-	//@Test
+	@Test
 	public void t03_checkLengthPassWord() {
 		driver.get("http://live.demoguru99.com/");
 		driver.findElement(By.xpath("//div[@class=\"footer\"]//a[text()='My Account']")).click();
@@ -63,7 +63,7 @@ public class Topic02_Xpath_CSS_Part_IV {
 		
 	}
 	
-	//@Test
+	@Test
 	public void t04_checkPassWord() {
 		driver.get("http://live.demoguru99.com/");
 		driver.findElement(By.xpath("//div[@class=\"footer\"]//a[@title=\"My Account\"]")).click();
