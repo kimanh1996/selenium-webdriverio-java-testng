@@ -2,6 +2,7 @@ package app;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
@@ -14,11 +15,9 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import Util.Common;
-
 public class Topic07_DropDownList {
 	WebDriver driver;
-	
+	Select select;
 
 	@BeforeClass
 	public void beforeClass() {
@@ -31,36 +30,37 @@ public class Topic07_DropDownList {
 	public void T01_htmlDropDown() {
 		driver.get("https://automationfc.github.io/basic-form/index.html");
 
-		Select selectJob = new Select(driver.findElement(By.cssSelector("select[id='job1']")));
-		Assert.assertFalse(selectJob.isMultiple());
-		selectJob.selectByVisibleText("Mobile Testing");
-		Assert.assertEquals("Mobile Testing", selectJob.getFirstSelectedOption().getText());
-		selectJob.selectByValue("manual");
-		Assert.assertEquals("Manual Testing", selectJob.getFirstSelectedOption().getText());
-		selectJob.selectByIndex(9);
-		Assert.assertEquals("Functional UI Testing", selectJob.getFirstSelectedOption().getText());
-		Assert.assertEquals(10, selectJob.getOptions().size());
+		select = new Select(driver.findElement(By.cssSelector("select[id='job1']")));
+		Assert.assertFalse(select.isMultiple());
+		select.selectByVisibleText("Mobile Testing");
+		Assert.assertEquals("Mobile Testing", select.getFirstSelectedOption().getText());
+		select.selectByValue("manual");
+		Assert.assertEquals("Manual Testing", select.getFirstSelectedOption().getText());
+		select.selectByIndex(9);
+		Assert.assertEquals("Functional UI Testing", select.getFirstSelectedOption().getText());
+		Assert.assertEquals(10, select.getOptions().size());
 
 		// JOB2
-		Select selectJob2 = new Select(driver.findElement(By.cssSelector("select[id='job2']")));
-		Assert.assertTrue(selectJob2.isMultiple());
+		select = new Select(driver.findElement(By.cssSelector("select[id='job2']")));
+		Assert.assertTrue(select.isMultiple());
 		List<String> listJob = new ArrayList<>();
-		selectJob2.selectByVisibleText("Automation");
+		select.selectByVisibleText("Automation");
 		listJob.add("Automation");
-		selectJob2.selectByVisibleText("Mobile");
+		select.selectByVisibleText("Mobile");
 		listJob.add("Mobile");
-		selectJob2.selectByVisibleText("Desktop");
+		select.selectByVisibleText("Desktop");
 		listJob.add("Desktop");
-		List<WebElement> listSelect = selectJob2.getAllSelectedOptions();
+		List<WebElement> listSelect = select.getAllSelectedOptions();
 		List<String> listString = new ArrayList<>();
 		for (WebElement we : listSelect) {
 			listString.add(we.getText());
 		}
 		Assert.assertEquals(listString, listJob);
-		selectJob2.deselectAll();
-		Assert.assertEquals(selectJob2.getAllSelectedOptions().size(),0);
+		select.deselectAll();
+		Assert.assertEquals(select.getAllSelectedOptions().size(), 0);
 
 	}
+
 	@Test
 	public void T02_Register() {
 		driver.get("https://demo.nopcommerce.com/register");
@@ -78,12 +78,26 @@ public class Topic07_DropDownList {
 		year.selectByVisibleText("1980");
 		Assert.assertEquals(year.getOptions().size(), 112);
 		driver.findElement(By.name("register-button")).click();
-		senKeyData(By.id("Email"), "ab@gmail.com");
+		Random ran = new Random();
+		int random = ran.nextInt(9999);
+		senKeyData(By.id("Email"), "ab" + random + "@gmail.com");
 		senKeyData(By.id("Password"), "123456");
 		senKeyData(By.id("ConfirmPassword"), "123456");
 		driver.findElement(By.id("register-button")).click();
-	    
+		Assert.assertEquals(driver.findElement(By.xpath("//div[@class=\"result\"]")).getText(),
+				"Your registration completed");
+		driver.findElement(By.xpath("//a[text()=\"My account\"]")).click();
+		checkSelected(By.xpath("//input[@id='gender-male']"));
+		Assert.assertEquals(driver.findElement(By.id("FirstName")).getAttribute("value"), "tran");
+		Assert.assertEquals(driver.findElement(By.id("LastName")).getAttribute("value"), "anh");
+		select = new Select(driver.findElement(By.cssSelector("select[name='DateOfBirthDay']")));
+		select = new Select(driver.findElement(By.cssSelector("select[name='DateOfBirthMonth']")));
+		Assert.assertEquals(select.getFirstSelectedOption().getText(), "May");
+		select = new Select(driver.findElement(By.cssSelector("select[name='DateOfBirthYear']")));
+		Assert.assertEquals(select.getFirstSelectedOption().getText(), "1980");
+
 	}
+
 	public boolean checkDisplayed(By by) {
 		if (driver.findElement(by).isDisplayed()) {
 			return true;
@@ -115,6 +129,7 @@ public class Topic07_DropDownList {
 			driver.findElement(by).sendKeys(data);
 		}
 	}
+
 	public void sleepInSecond(long second) {
 		try {
 			Thread.sleep(second * 1000);
